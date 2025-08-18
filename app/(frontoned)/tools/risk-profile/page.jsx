@@ -45,7 +45,7 @@ const RiskProfile = () => {
         }
     }
 
-    useEffect(() => { fetchSiteData(),fetchQuestions() }, [])
+    useEffect(() => { fetchSiteData(), fetchQuestions() }, [])
     const FormSchema = z.object({
         username: z.string().min(2, { message: "Username must be at least 2 characters." }),
         mobile: z.string().nonempty({ message: "Mobile number is required." }),
@@ -55,8 +55,7 @@ const RiskProfile = () => {
 
     const fetchQuestions = async () => {
         try {
-            const response = await axios.get(`/api/risk-questions`);
-            // console.log(response)
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_DATA_API}/api/open-apis/risk-questions?apikey=${process.env.NEXT_PUBLIC_API_KEY}`);
             if (response.status == 200) {
                 setQuestions(response.data)
             }
@@ -85,8 +84,8 @@ const RiskProfile = () => {
             if (!hcaptchaToken) {
                 setCaptchaError("Please complete the CAPTCHA verification.");
                 return;
-              }
-              setCaptchaError("");
+            }
+            setCaptchaError("");
             setLoading(true)
             setHcaptchaToken(null);
             setUserData(data)
@@ -159,17 +158,17 @@ const RiskProfile = () => {
 
                     {/* hCaptcha */}
                     <div>
-            <HCaptcha
-              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-              onVerify={(token) => setHcaptchaToken(token)}
-            />
-            {captchaError && (
-              <p className="text-red-500 text-sm mt-2">{captchaError}</p>
-            )}
-          </div>
+                        <HCaptcha
+                            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                            onVerify={(token) => setHcaptchaToken(token)}
+                        />
+                        {captchaError && (
+                            <p className="text-red-500 text-sm mt-2">{captchaError}</p>
+                        )}
+                    </div>
 
                     {/* Submit Button */}
-                    <Button className="text-[var(--rv-white)] border" type="submit">{!loading ? "Submit" : "Loading..."}</Button>
+                    <Button className="border" type="submit">{!loading ? "Submit" : "Loading..."}</Button>
                 </form>
             </Form>
         );
@@ -292,78 +291,78 @@ Here are the answers you provided:
 
     return (
         <div className="pt-20">
-        <div className="main_section">
-            <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-            <Toaster />
-            {isModalOpen && (
-                <div className="fixed  inset-0 bg-[#0e314da3] bg-opacity-60 z-[5000] flex justify-center ">
-                    <div className="p-3 rounded-lg shadow-lg w-[30rem] bg-white mt-20 mb-2 max-h-[500px]">
-                        <InquiryForm onClose={() => {
-                            setIsModalOpen(false);
-                            setIsFormVisible(true); // Show quiz after form is filled
-                        }} />
-                    </div>
-                </div>
-            )}
-            {isQuizCompleted ? (
-                <div className="flex flex-col items-center text-center">
-                    <h2 className="text-3xl font-bold mb-4 text-gray-800">Your Total Score: {score}</h2>
-                    <div className={`text- 4xl font-semibold mb - 4 ${getResultMessage().color} `}>
-                        {getResultMessage().message}
-                    </div>
-                    <div className="bg-gray-100 p-4 rounded-lg shadow-inner">
-                        <p className="text-lg">Here’s what your score means:</p>
-                        <ul className="mt-2 text-left">
-                            <li className="mb-3 text-gray-600"><span className="text-bold text-lg text-gray-900">Conservative: </span> Conservative investors are investors who want stability and are more concerned with protecting their current investments than increasing the real value of their investments.</li>
-                            <li className="mb-3 text-gray-600"><span className="text-bold text-lg text-gray-900">Moderately Conservative: </span>M Moderately conservative investors are investors who want to protect their capital, and achieve some real increase in the value of their investments.</li>
-                            <li className="mb-3 text-gray-600"><span className="text-bold text-lg text-gray-900">Moderate: </span>Moderate investors are long-term investors who want reasonable but relatively stable growth. Some fluctuations are tolerable, but investors want less risk than that attribute to a fully equity based investment.</li>
-                            <li className="mb-3 text-gray-600"><span className="text-bold text-lg text-gray-900">Moderately Aggressive: </span>Moderately Aggressive investors are long-term investors who want good real growth in their capital. A fair amount of risk is acceptable.</li>
-                            <li className="mb-3 text-gray-600"><span className="text-bold text-lg text-gray-900">Aggressive:</span> Aggressive investors are long-term investors who want high capital growth. Substantial year-to-year fluctuations in value are acceptable in exchange for a potentially high long-term return.</li>
-                        </ul>
-                    </div>
-                    <button
-                        onClick={() => {
-                            // Reset the quiz
-                            setCurrentQuestionIndex(0);
-                            setScore(0);
-                            setIsQuizCompleted(false);
-                            setSelectedAnswer(null);
-                            router.push("/")
-                        }}
-                        className="mt-6 bg-gray-700 text-[var(--rv-white)] px-4 py-2 rounded-lg hover:bg-gray-800"
-                    >
-                        Back Home
-                    </button>
-                </div>
-            ) : (
-                <div className="flex flex-col">
-                    <h2 className="text-2xl font-semibold mb-4 text-gray-800">{questions[currentQuestionIndex]?.question}</h2>
-                    <div className="mb-4 ">
-                        {questions[currentQuestionIndex]?.answers?.map((answer, index) => (
-                            <div key={index} className="flex items-center mb-2">
-                                <input
-                                    type="radio"
-                                    id={`answer - ${index} `}
-                                    name="answer"
-                                    value={answer.marks}
-                                    checked={selectedAnswer === answer.marks}
-                                    onChange={() => handleAnswerSelect(answer)}
-                                    className="mr-2"
-                                />
-                                <label htmlFor={`answer - ${index} `} className="text-lg text-gray-800">{answer.text}</label>
+            <div className="main_section">
+                <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+                    <Toaster />
+                    {isModalOpen && (
+                        <div className="fixed  inset-0 bg-[#0e314da3] bg-opacity-60 z-[5000] flex justify-center ">
+                            <div className="p-3 rounded-lg shadow-lg w-[30rem] bg-white mt-20 mb-2 max-h-[500px]">
+                                <InquiryForm onClose={() => {
+                                    setIsModalOpen(false);
+                                    setIsFormVisible(true); // Show quiz after form is filled
+                                }} />
                             </div>
-                        ))}
-                    </div>
-                    <Button
-                        onClick={() => handleNextClick(questions[currentQuestionIndex]?.question)}
-                        className="text-[var(--rv-white)] border px-4 py-2 rounded-lg hover:bg-[var(--rv-bg-primary)] hover:text-[var(--rv-white)] w-1/3 "
-                    >
-                        Next
-                    </Button>
+                        </div>
+                    )}
+                    {isQuizCompleted ? (
+                        <div className="flex flex-col items-center text-center">
+                            <h2 className="text-3xl font-bold mb-4 text-gray-800">Your Total Score: {score}</h2>
+                            <div className={`text- 4xl font-semibold mb - 4 ${getResultMessage().color} `}>
+                                {getResultMessage().message}
+                            </div>
+                            <div className="bg-gray-100 p-4 rounded-lg shadow-inner">
+                                <p className="text-lg">Here’s what your score means:</p>
+                                <ul className="mt-2 text-left">
+                                    <li className="mb-3 text-gray-600"><span className="text-bold text-lg text-gray-900">Conservative: </span> Conservative investors are investors who want stability and are more concerned with protecting their current investments than increasing the real value of their investments.</li>
+                                    <li className="mb-3 text-gray-600"><span className="text-bold text-lg text-gray-900">Moderately Conservative: </span>M Moderately conservative investors are investors who want to protect their capital, and achieve some real increase in the value of their investments.</li>
+                                    <li className="mb-3 text-gray-600"><span className="text-bold text-lg text-gray-900">Moderate: </span>Moderate investors are long-term investors who want reasonable but relatively stable growth. Some fluctuations are tolerable, but investors want less risk than that attribute to a fully equity based investment.</li>
+                                    <li className="mb-3 text-gray-600"><span className="text-bold text-lg text-gray-900">Moderately Aggressive: </span>Moderately Aggressive investors are long-term investors who want good real growth in their capital. A fair amount of risk is acceptable.</li>
+                                    <li className="mb-3 text-gray-600"><span className="text-bold text-lg text-gray-900">Aggressive:</span> Aggressive investors are long-term investors who want high capital growth. Substantial year-to-year fluctuations in value are acceptable in exchange for a potentially high long-term return.</li>
+                                </ul>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    // Reset the quiz
+                                    setCurrentQuestionIndex(0);
+                                    setScore(0);
+                                    setIsQuizCompleted(false);
+                                    setSelectedAnswer(null);
+                                    router.push("/")
+                                }}
+                                className="mt-6 bg-gray-700 text-[var(--rv-white)] px-4 py-2 rounded-lg hover:bg-gray-800"
+                            >
+                                Back Home
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col">
+                            <h2 className="text-2xl font-semibold mb-4 text-gray-800">{questions[currentQuestionIndex]?.question}</h2>
+                            <div className="mb-4 ">
+                                {questions[currentQuestionIndex]?.answers?.map((answer, index) => (
+                                    <div key={index} className="flex items-center mb-2">
+                                        <input
+                                            type="radio"
+                                            id={`answer - ${index} `}
+                                            name="answer"
+                                            value={answer.marks}
+                                            checked={selectedAnswer === answer.marks}
+                                            onChange={() => handleAnswerSelect(answer)}
+                                            className="mr-2"
+                                        />
+                                        <label htmlFor={`answer - ${index} `} className="text-lg text-gray-800">{answer.text}</label>
+                                    </div>
+                                ))}
+                            </div>
+                            <Button
+                                onClick={() => handleNextClick(questions[currentQuestionIndex]?.question)}
+                                className="text-[var(--rv-white)] border px-4 py-2 rounded-lg hover:bg-[var(--rv-bg-primary)] hover:text-[var(--rv-white)] w-1/3 "
+                            >
+                                Next
+                            </Button>
+                        </div>
+                    )}
                 </div>
-            )}
-        </div>
-        </div>
+            </div>
         </div>
     );
 };

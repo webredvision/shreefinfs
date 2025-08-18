@@ -1,14 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import InnerBanner from "@/components/InnerBanner/InnerBanner";
 
 export default function PayPremium() {
     const [allCategory, setAllCategory] = useState([]);
     const [selectedCategoryId, setSelectedCategoryId] = useState(""); // category _id
-    const [selectedCategoryTitle, setSelectedCategoryTitle] = useState(""); // display title
     const [amcLogoData, setAmcLogoData] = useState([]);
 
     useEffect(() => {
@@ -23,7 +21,7 @@ export default function PayPremium() {
 
     const fetchCategories = async () => {
         try {
-            const res = await fetch("/api/amc-category");
+            const res = await fetch(`${process.env.NEXT_PUBLIC_DATA_API}/api/category`);
             const data = await res.json();
 
             const filtered = data.filter((cat) =>
@@ -34,7 +32,6 @@ export default function PayPremium() {
 
             if (filtered.length > 0) {
                 setSelectedCategoryId(filtered[0]._id);
-                setSelectedCategoryTitle(filtered[0].title);
             }
         } catch (error) {
             console.error("Error fetching categories:", error);
@@ -59,17 +56,16 @@ export default function PayPremium() {
             <section className="max-w-screen-xl mx-auto main_section">
                 <div>
                     {/* CATEGORY BUTTONS */}
-                    <div className="md:px-5 py-4 bg-[var(--rv-secondary)] text-black flex flex-wrap gap-2 md:gap-4 rounded">
+                    <div className="md:px-5 py-4 bg-[var(--rv-primary)] flex flex-wrap gap-2 md:gap-4 rounded">
                         {allCategory.map((cat) => (
                             <div
                                 key={cat._id}
-                                className={`cursor-pointer uppercase px-4 py-2 rounded font-semibold hover:text-[--rv-primary] ${selectedCategoryId === cat._id
-                                    ? "text-[var(--rv-secondary)] bg-[var(--rv-primary)]"
+                                className={`cursor-pointer text-[var(--rv-white)] uppercase px-4 py-2 rounded font-semibold hover:text-[--rv-primary] ${selectedCategoryId === cat._id
+                                    ? " bg-[var(--rv-secondary)]"
                                     : ""
                                     }`}
                                 onClick={() => {
                                     setSelectedCategoryId(cat._id);
-                                    setSelectedCategoryTitle(cat.title);
                                 }}
                             >
                                 {cat.title}
@@ -82,8 +78,8 @@ export default function PayPremium() {
                         {amcLogoData.map((item, index) => (
                             <Link href={item.logourl || "#"} key={index} target="_blank">
                                 <div className="flex justify-center p-5 border text-center mb-3">
-                                    <Image
-                                        src={`https://redvisionweb.com/${item.logo}`}
+                                    <img
+                                        src={`https://redvisionweb.com${item.logo}`}
                                         alt={`logo-${item.logoname}`}
                                         width={150}
                                         height={100}
@@ -96,28 +92,4 @@ export default function PayPremium() {
             </section>
         </div>
     );
-}
-
-
-export async function GET(req) {
-    await ConnectDB();
-
-    try {
-        const { searchParams } = new URL(req.url);
-        const categoryID = searchParams.get("categoryID");
-        const addisstatus = searchParams.get("addisstatus") === "true"; // string to boolean
-
-        // Build query filter
-        const query = {};
-        if (categoryID) {
-            query.logocategory = categoryID;
-        }
-        query.addisstatus = addisstatus; // always filter by addisstatus (default false)
-
-        const filteredData = await AmcsLogoModel.find(query);
-
-        return NextResponse.json({ success: true, data: filteredData }, { status: 200 });
-    } catch (error) {
-        return NextResponse.json({ success: false, error: error.message || error }, { status: 500 });
-    }
 }
