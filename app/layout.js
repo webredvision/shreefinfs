@@ -1,29 +1,54 @@
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { siteSettings } from "@/data/sitesetting";
+import { Audiowide } from "next/font/google";
+import RenewalPopup from "@/components/renewalPopup";
+import { SubscriptionProvider } from "@/context/SubscriptionContext";
+import { getSiteData } from "@/lib/functions";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const merriweather = Audiowide({
   subsets: ["latin"],
+  variable: "--font-merriweather",
+  weight: ["400"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: siteSettings.siteName,
-  description: siteSettings.siteName,
-};
+export async function generateMetadata() {
+  const siteData = await getSiteData();
+  return {
+    title: {
+      default: siteData?.websiteName || "",
+      template: `%s - ${siteData?.websiteName || ""}`,
+    },
+    description:
+      siteData?.websiteName || "",
+    openGraph: {
+      title: siteData?.websiteName || "",
+      description: siteData?.description || "",
+      type: "website",
+      locale: "en_IN",
+      siteName: siteData?.websiteName || "",
+      url: siteData?.callbackurl || "",
+      // images: ["https://100takka.com/og.png"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: siteData?.websiteName || "",
+      description: siteData?.description || "",
+    },
+    authors: [siteData?.websiteName || ""] || [],
+  };
+}
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[url('/images/doodlebg.svg')] bg-cover bg-center bg-no-repeat`}
-      >
-        {children}
+      <body className={`${merriweather.variable}`}>
+        <SubscriptionProvider>
+          <RenewalPopup />
+          <div className="">
+            {children}
+          </div>
+        </SubscriptionProvider>
       </body>
     </html>
   );

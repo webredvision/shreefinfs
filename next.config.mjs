@@ -6,7 +6,7 @@ dotenv.config({ path: "/rvdata/rvtools/env-files/shreefinfs.env" });
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["res.cloudinary.com"],
+    domains: ["res.cloudinary.com","www.redvisionweb.com"],
   },
 };
  

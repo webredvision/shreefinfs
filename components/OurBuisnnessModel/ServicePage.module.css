@@ -1,0 +1,164 @@
+/* MutualFund.module.css */
+
+.serviceWrapper {}
+
+.mainSection {
+    padding: 60px 10px;
+}
+
+.serviceIntroSection {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.serviceImageWrapper {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 1.5rem;
+}
+
+.serviceImage {
+    width: 100%;
+    border-radius: 1rem;
+    object-fit: cover;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.serviceContentWrapper {
+    width: 100%;
+    padding-left: 0;
+    color: #4a4a4a;
+    font-size: 1.05rem;
+}
+
+.serviceSection {
+    margin-bottom: 2.5rem;
+}
+
+.serviceSection h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--rv-secondary);
+    margin-bottom: 1rem;
+}
+
+.serviceListItem {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    font-size: 1rem;
+    color: #4b5563;
+}
+
+.serviceCTA {
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.cardGrid {
+    display: grid;
+    grid-template-columns: 3fr;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.cardItem {
+    background: var(--rv-white);
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    padding: 1.5rem;
+    position: relative;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    cursor: default;
+    overflow: hidden;
+}
+
+.cardItem::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(135deg, #f4f4f4 0%, #ffffff 100%);
+    transform: rotate(25deg);
+    transition: 0.4s ease;
+    z-index: 0;
+}
+
+.cardItem:hover::before {
+    top: -70%;
+    left: -70%;
+}
+
+.cardItem:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+.cardIcon {
+    font-size: 2rem;
+    color: var(--rv-primary);
+    z-index: 1;
+    position: relative;
+    margin-bottom: 0.75rem;
+}
+
+.cardTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--rv-secondary-foreground);
+    z-index: 1;
+    position: relative;
+    margin-bottom: 0.5rem;
+}
+
+.cardDesc {
+    color: #4b5563;
+    z-index: 1;
+    position: relative;
+    font-size: 0.95rem;
+}
+
+/* Tablet View */
+@media (min-width: 640px) {
+    .cardGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Desktop View */
+@media (min-width: 768px) {
+    .serviceIntroSection {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .serviceImageWrapper {
+        max-width: 33%;
+        margin-bottom: 0;
+    }
+
+    .serviceContentWrapper {
+        padding-left: 1rem;
+        width: 67%;
+    }
+
+    .cardGrid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Large Screens */
+@media (min-width: 1024px) {
+    .serviceContentWrapper {
+        font-size: 1.1rem;
+    }
+
+    .serviceSection h2 {
+        font-size: 1.75rem;
+    }
+}

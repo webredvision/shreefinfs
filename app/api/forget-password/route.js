@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function POST(req) {
     try {
         const formData = await req.json();
-        const res = await axios.post("https://www.redvisionweb.com/api/login/forget-password", formData,
+        const res = await axios.post("https://superadmin-roan.vercel.app/api/login/forget-password", formData,
             {
                 headers: {
                     "Content-Type": "application/json",  // Set the content type to multipart/form-data
