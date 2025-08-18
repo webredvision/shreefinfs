@@ -29,7 +29,7 @@ export default function HeroSection({ sitedata }) {
           Our journey began with a simple promise: to empower every individual in India to achieve their financial goals and protect what matters most. We know that life's uncertainties can be overwhelming, but with the right guidance and support, you can navigate them successfully.
         </motion.p>
         {/* New Buttons */}
-        <Link href="/contactus">
+        <Link href="/contact-us">
           <motion.button
             className="btn-primary"
             initial={{ y: 20, opacity: 0 }}
