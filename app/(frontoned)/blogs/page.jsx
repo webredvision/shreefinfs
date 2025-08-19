@@ -1,9 +1,9 @@
 
 import React from "react";
 import { getBlogs } from "@/lib/functions";
-import InnerBanner from "@/components/innerBanner/InnerBanner";
 import style from "./BlogPage.modular.css"
 import BlogCards from "@/components/blogcards";
+import InnerBanner from "@/components/InnerBanner/InnerBanner";
 
 const Blogs = async () => {
   const data = await getBlogs()
