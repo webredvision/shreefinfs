@@ -1,26 +1,33 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import WelcomePage from "./welcome";
 import axios from "axios";
-import InnerBanner from "@/components/InnerBanner/InnerBanner";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import TopSuggestedFund from "@/components/topSuggestedFuns";
 import Link from "next/link";
 import {
-    Form, FormControl, FormField, FormItem, FormMessage
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-toastify";
+import InnerBanner from "@/components/InnerBanner/InnerBanner";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 
-
 const FormSchema = z.object({
-    username: z.string().min(2, { message: "Username must be at least 2 characters." }),
+    username: z
+        .string()
+        .min(2, { message: "Username must be at least 2 characters." }),
     mobile: z.string().nonempty({ message: "Mobile number is required." }),
     email: z.string().email({ message: "Invalid email address." }),
     message: z.string().optional(),
+    captcha: z.string().optional(),
 });
 
 const FinancialHealthPage = () => {
@@ -32,10 +39,51 @@ const FinancialHealthPage = () => {
     const [answers, setAnswers] = useState([]);
     const [isQuizCompleted, setIsQuizCompleted] = useState(false);
     const [questions, setQuestions] = useState([]);
-
+    const [captcha, setCaptcha] = useState("");
+    const [captchaImage, setCaptchaImage] = useState("");
+    const [userCaptcha, setUserCaptcha] = useState("");
     const [performanceData, setPerformanceData] = useState({});
     const [loading, setLoading] = useState(false);
-    console.log(performanceData)
+    const [sitedata, setSitedata] = useState([]);
+    const hcaptchaRef = useRef(null);
+    const fetchSiteData = async () => {
+        try {
+            const res = await axios.get('/api/admin/site-settings');
+            if (res.status === 200) {
+                setSitedata(res.data[0])
+            }
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => { fetchSiteData() }, [])
+
+    useEffect(() => {
+        refreshCaptcha();
+    }, []);
+
+    const generateCaptchaText = () => {
+        return Math.random()
+            .toString(36)
+            .substring(2, 8)
+            .toUpperCase();
+    };
+
+    const createCaptchaSVG = (text) => {
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" height="40" width="120">
+         <rect width="100%" height="100%" fill="#f8d7c3"/>
+         <text x="10" y="28" font-size="24" fill="#a30a00" font-family="monospace">${text}</text>
+       </svg>`;
+        return `data:image/svg+xml;base64,${btoa(svg)}`;
+    };
+    const refreshCaptcha = () => {
+        const newCaptcha = generateCaptchaText();
+        setCaptcha(newCaptcha);
+        setCaptchaImage(createCaptchaSVG(newCaptcha));
+        setUserCaptcha("");
+    };
 
     useEffect(() => {
         if (isQuizCompleted) {
@@ -51,14 +99,13 @@ const FinancialHealthPage = () => {
         setLoading(true);
         try {
             // Join all categories into one string with commas
-            const queryString = categories.map(cat => encodeURIComponent(cat)).join(",");
-            console.log("Query String:", queryString);
+            const queryString = categories
+                .map((cat) => encodeURIComponent(cat))
+                .join(",");
 
             const response = await axios.get(
                 `${process.env.NEXT_PUBLIC_DATA_API}/api/open-apis/fund-performance/fp-data?categorySchemes=${queryString}&apikey=${process.env.NEXT_PUBLIC_API_KEY}`
             );
-
-            console.log("API Response:", response.data);
 
             if (response.status === 200) {
                 const { data } = response.data;
@@ -108,70 +155,73 @@ const FinancialHealthPage = () => {
         }, 300); // ⏳ 0.3 seconds delay
     };
 
-    const sendAllAnswersToAPI = async (answers) => {
-        let healthprofile
-        const totalScore = answers.reduce((acc, curr) => acc + curr.selectedAnswerMarks, 0);
-        if (totalScore >= 1 && totalScore <= 3) {
-            healthprofile = "Critical"
-        }
-        else if (totalScore >= 4 && totalScore <= 5) {
-            healthprofile = "Weak"
-        }
-        else if (totalScore >= 6 && totalScore <= 7) {
-            healthprofile = "Border Line"
-        }
-        else if (totalScore >= 8 && totalScore <= 9) {
-            healthprofile = "Fit"
-        }
-        else {
-            healthprofile = "Excellent"
+    const sendAllAnswersToAPI = async (data) => {
+        let healthprofile;
+        const totalScore = answers.reduce(
+            (acc, curr) => acc + curr.selectedAnswerMarks,
+            0
+        );
+        if (totalScore >= 0 && totalScore <= 3) {
+            healthprofile = "Critical";
+        } else if (totalScore >= 4 && totalScore <= 5) {
+            healthprofile = "Weak";
+        } else if (totalScore >= 6 && totalScore <= 7) {
+            healthprofile = "Border Line";
+        } else if (totalScore >= 8 && totalScore <= 9) {
+            healthprofile = "Fit";
+        } else {
+            healthprofile = "Excellent";
         }
         const payload = {
-            user: userdata,
+            user: data,
             score: totalScore,
             answers: answers,
-            healthprofile: healthprofile
+            healthprofile: healthprofile,
         };
-        const emailContent = answers.map(answer => {
-            return `<p><strong>Question:</strong> ${answer.question}</p>
+        const emailContent = answers
+            .map((answer) => {
+                return `<p><strong>Question:</strong> ${answer.question}</p>
                     <p><strong>Answer:</strong> ${answer.selectedAnswerText}</p>`;
-        }).join('');
+            })
+            .join("");
 
         const emaildata = {
-            user: userdata?.username,
-            to: userdata?.email,
-            subject: 'Thank You for Your Enquiry!',
-            text: `Dear ${userdata?.username},
+            user: data?.username,
+            to: data?.email,
+            subject: "Thank You for Your Enquiry!",
+            text: `Dear ${data?.username},
     We sincerely appreciate your interest and the time you took to fill out our enquiry form. We have received your details, and our team will be in touch with you soon.
-    
+   
     Your score is ${totalScore}
-    
+   
     Here are the answers you provided:
-    
-    ${emailContent},`
+   
+    ${emailContent},`,
         };
         const senderdata = {
-            user: sitedata?.title,
+            user: data?.title,
             to: sitedata?.email,
-            subject: 'New Enquiry',
+            subject: "New Enquiry",
             text: `New Enquiry from Risk profile\n
 User Name : ${data?.username}, \n
 Email : ${data?.email} \n
 Mobile number : ${data?.mobile} \n
 Message : ${data?.message}\n
 User score is ${totalScore}
-
+ 
 Here are the answers you provided:
-    
+   
 ${emailContent},`,
-        }
-        const response = await axios.post("/api/financialhealth/", payload);
-        await axios.post('/api/email/', emaildata);
-        const sender = await axios.post('/api/email/', senderdata);
+        };
+        const response = await axios.post("/api/financialhealth", payload);
+        await axios.post("/api/email/", emaildata);
+        const sender = await axios.post("/api/email/", senderdata);
         if (response.status === 201) {
             toast({
                 description: "Your message has been sent.",
             });
+            setLoading(false);
+            setIsModalOpen(false);
         } else {
             alert(response.statusText);
         }
@@ -193,19 +243,26 @@ ${emailContent},`,
 
         // Handle form submission
         const onSubmit = async (data) => {
-            setLoading(true)
-            setUserData(data)
-            setIsModalOpen(false)
-            setLoading(false)
-            setHcaptchaToken(null);
+            console.log(data);
+            setLoading(true);
+            sendAllAnswersToAPI(data)
+            //   setIsModalOpen(false);
+            //   setLoading(false);
         };
 
         return (
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 rounded py-3 px-6 text-black">
+                <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-8 rounded py-3 px-6 text-black"
+                >
                     <div className="flex justify-between items-center">
-                        <h1 className="font-medium text-xl text-white">Please Fill Your Detail Carefully...</h1>
-                        <Link href="/" className="text-right text-blue-500 font-medium">Back</Link>
+                        <h1 className="font-medium text-xl">
+                            Please Fill Your Detail Carefully...
+                        </h1>
+                        <Link href="/" className="text-right text-blue-500 font-medium">
+                            Back
+                        </Link>
                     </div>
                     {/* Username Field */}
                     <FormField
@@ -214,7 +271,12 @@ ${emailContent},`,
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <Input placeholder="User Name" {...field} aria-label="User Name" className="border-2 border-gray-500" />
+                                    <Input
+                                        placeholder="User Name"
+                                        {...field}
+                                        aria-label="User Name"
+                                        className="border border-gray-500"
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -228,7 +290,12 @@ ${emailContent},`,
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <Input placeholder="Mobile" {...field} aria-label="Mobile Number" className="border-2 border-gray-500" />
+                                    <Input
+                                        placeholder="Mobile"
+                                        {...field}
+                                        aria-label="Mobile Number"
+                                        className="border border-gray-500"
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -242,7 +309,13 @@ ${emailContent},`,
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <Input type="email" placeholder="Email" {...field} aria-label="Email" className="border-2 border-gray-500" />
+                                    <Input
+                                        type="email"
+                                        placeholder="Email"
+                                        {...field}
+                                        aria-label="Email"
+                                        className="border border-gray-500"
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -256,7 +329,12 @@ ${emailContent},`,
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <textarea placeholder="Message" {...field} className="w-full border-2 border-gray-500 p-1 rounded bg-white" aria-label="Message" />
+                                    <textarea
+                                        placeholder="Message"
+                                        {...field}
+                                        className="w-full border border-gray-500 p-1 rounded bg-white"
+                                        aria-label="Message"
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -265,34 +343,51 @@ ${emailContent},`,
 
                     {/* hCaptcha */}
                     <HCaptcha
-                        theme="dark"
                         sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}// Replace with your site key
                         onVerify={setHcaptchaToken} // Set the token on successful verification
                     />
 
                     {/* Submit Button */}
-                    <button type="submit" className="btn-primary">{!loading ? "Submit" : "Loading..."}</button>
+                    <button type="submit" className="btn-secondary">
+                        {!loading ? "Submit" : "Loading..."}
+                    </button>
                 </form>
             </Form>
         );
     };
 
     const getResultMessage = () => {
-        if (score >= 1 && score <= 3) return { message: "Critical", color: "text-red-500" };
-        if (score >= 4 && score <= 5) return { message: "Weak", color: "text-yellow-600" };
-        if (score >= 6 && score <= 7) return { message: "Border Line", color: "text-yellow-400" };
-        if (score >= 8 && score <= 9) return { message: "Fit", color: "text-green-400" };
+        if (score >= 0 && score <= 3)
+            return { message: "Critical", color: "text-red-500" };
+        if (score >= 4 && score <= 5)
+            return { message: "Weak", color: "text-yellow-600" };
+        if (score >= 6 && score <= 7)
+            return { message: "Border Line", color: "text-yellow-400" };
+        if (score >= 8 && score <= 9)
+            return { message: "Fit", color: "text-green-400" };
         return { message: "Excellent", color: "text-green-500" };
     };
 
     const getSuggestedFunds = () => {
         switch (getResultMessage().message) {
             case "Critical":
-                return ["Liquid Fund", "Ultra Short Duration Fund", "Balanced Hybrid Fund"];
+                return [
+                    "Liquid Fund",
+                    "Ultra Short Duration Fund",
+                    "Balanced Hybrid Fund",
+                ];
             case "Weak":
-                return ["Conservative Hybrid Fund", "Equity Savings Fund", "Multi Asset Allocation Fund"];
+                return [
+                    "Conservative Hybrid Fund",
+                    "Equity Savings Fund",
+                    "Multi Asset Allocation Fund",
+                ];
             case "Border Line":
-                return ["Aggressive Hybrid Fund", "Large & Mid Cap Fund", "Index Funds/ETFs"];
+                return [
+                    "Aggressive Hybrid Fund",
+                    "Large & Mid Cap Fund",
+                    "Index Funds/ETFs",
+                ];
             case "Fit":
                 return ["Flexi Cap Fund", "Mid Cap Fund", "Focused Fund"];
             case "Excellent":
@@ -308,9 +403,9 @@ ${emailContent},`,
 
     return (
         <div>
-            <InnerBanner pageName={"Financial Health"} />
+            <InnerBanner pageName={"Financial health"} />
             <div className="flex flex-col bg-cover bg-center relative">
-                <div className="absolute inset-0 bg-black"></div>
+                <div className="absolute inset-0"></div>
                 {isModalOpen && (
                     <>
                         {/* 🔵 Background Blur Layer */}
@@ -318,30 +413,40 @@ ${emailContent},`,
 
                         {/* 🔵 Modal */}
                         <div className="fixed inset-0 flex items-center justify-center z-20">
-                            <div className="p-3 rounded-lg shadow-lg w-[30rem] bg-zinc-950 ring-1 ring-gray-800 text-white mt-10">
-                                <InquiryForm onClose={() => {
-                                    setIsModalOpen(false);
-                                    setIsFormVisible(true); // Show quiz after form is filled
-                                }} />
+                            <div className="p-3 rounded-lg shadow-lg w-[30rem] bg-white ring-1 ring-gray-800 text-white mt-10">
+                                <InquiryForm
+                                    onClose={() => {
+                                        setIsModalOpen(false);
+                                        setIsFormVisible(true); // Show quiz after form is filled
+                                    }}
+                                />
                             </div>
                         </div>
                     </>
                 )}
 
                 <div className="flex flex-col items-center justify-center flex-grow text-center px-6 relative py-20 space-y-5">
-                    <div className="bg-white/10 backdrop-blur-xl px-10 py-7 rounded-2xl shadow-xl border border-white/20 max-w-5xl">
+                    <div className="bg-[var(--rv-black)] backdrop-blur-xl px-10 py-7 rounded-2xl shadow-xl border border-white/20 max-w-5xl">
                         {!isStart ? (
                             <WelcomePage onStatus={setIsStart} />
                         ) : isQuizCompleted ? (
                             <div className="">
                                 <div className="grid grid-cols-2 gap-5">
                                     <div className="">
-                                        <Image src={"/health-check.webp"} width={900} height={200} alt="Image" className="bg-cover rounded" />
+                                        <Image
+                                            src={"/health-check.webp"}
+                                            width={900}
+                                            height={200}
+                                            alt="Image"
+                                            className="bg-cover rounded"
+                                        />
                                     </div>
                                     <div className="flex flex-col items-center text-center space-y-6">
                                         {/* 🎯 RESULT CARD */}
                                         <div className="bg-gradient-to-r from-[var(--rv-secondary)] to-[var(--rv-third)] p-8 rounded-2xl shadow-2xl w-full max-w-md">
-                                            <h2 className="text-xl font-semibold text-white">Your Health checkup is</h2>
+                                            <h2 className="text-xl font-semibold text-white">
+                                                Your Health checkup is
+                                            </h2>
                                             <div className="mt-3 text-5xl font-extrabold text-white">
                                                 {getResultMessage().message}
                                             </div>
@@ -366,7 +471,11 @@ ${emailContent},`,
                                                     "You've built a strong foundation. Now’s the time to grow faster, diversify more, invest with purpose, and build long-term potential wealth."}
                                             </p>
                                         </div>
-                                        <Link href={"#showfunds"} id="showfunds" className="btn-secondary">
+                                        <Link
+                                            href={"#showfunds"}
+                                            id="showfunds"
+                                            className="vl-btn6"
+                                        >
                                             Show Funds
                                         </Link>
                                     </div>
@@ -376,13 +485,16 @@ ${emailContent},`,
                             <div className="flex flex-col">
                                 {/* ✅ Question */}
                                 <h2 className="text-4xl font-semibold mb-4 max-w-3xl text-white">
-                                    {currentQuestionIndex + 1}. {questions[currentQuestionIndex]?.question}
+                                    {currentQuestionIndex + 1}.{" "}
+                                    {questions[currentQuestionIndex]?.question}
                                 </h2>
 
                                 {/* ✅ Answer Buttons */}
                                 <div className="mt-5 space-y-4">
                                     <button
-                                        className={`mb-5 py-3 w-full rounded-xl border font-bold text-xl transition ${selectedAnswer === 1 ? "bg-[var(--rv-secondary)] text-white" : "bg-[var(--rv-primary)] text-white"
+                                        className={`mb-5 py-3 w-full rounded-xl border font-bold text-xl transition ${selectedAnswer === 1
+                                            ? "bg-[var(--rv-secondary)] text-white"
+                                            : "bg-[var(--rv-primary)] text-white"
                                             }`}
                                         onClick={() => handleAnswerSelect(1)}
                                         disabled={selectedAnswer !== null} // ✅ Disable once clicked
@@ -391,7 +503,9 @@ ${emailContent},`,
                                     </button>
 
                                     <button
-                                        className={`py-3 w-full rounded-xl border font-bold text-xl transition ${selectedAnswer === 0 ? "bg-[var(--rv-secondary)] text-white" : "bg-[var(--rv-primary)] text-white"
+                                        className={`py-3 w-full rounded-xl border font-bold text-xl transition ${selectedAnswer === 0
+                                            ? "bg-[var(--rv-secondary)] text-white"
+                                            : "bg-[var(--rv-primary)] text-white"
                                             }`}
                                         onClick={() => handleAnswerSelect(0)}
                                         disabled={selectedAnswer !== null}
@@ -402,38 +516,48 @@ ${emailContent},`,
                             </div>
                         )}
                     </div>
-                    {isQuizCompleted &&
-                        <div id="showfunds" className="bg-white/10 backdrop-blur-xl px-10 py-7 rounded-2xl shadow-xl border border-white/20 w-5xl">
+                    {isQuizCompleted && (
+                        <div
+                            id="showfunds"
+                            className="bg-white/10 backdrop-blur-xl px-10 py-7 rounded-2xl shadow-xl border border-white/20 w-5xl"
+                        >
                             <div className="text-left mt-6">
                                 <div className="text-center mb-5">
-                                    <h3 className="text-2xl font-bold text-white mb-4">Suggested Funds for You</h3>
-                                    <p className="text-gray-100 max-w-2xl mx-auto text-sm">
-                                        The suggested funds are provided based on general categories and historical performance data.
-                                        These are not investment recommendations or personalized financial advice.
-                                        Please consult your financial advisor and read all scheme-related documents carefully before investing.
-                                        Mutual Fund investments are subject to market risks. Read all scheme related documents carefully.
+                                    <h3 className="text-2xl font-bold text-white mb-4">
+                                        Suggested Funds for You
+                                    </h3>
+                                    <p className="text-gray-7 00 max-w-2xl mx-auto text-sm">
+                                        The suggested funds are provided based on general categories
+                                        and historical performance data. These are not investment
+                                        recommendations or personalized financial advice. Please
+                                        consult your financial advisor and read all scheme-related
+                                        documents carefully before investing. Mutual Fund
+                                        investments are subject to market risks. Read all scheme
+                                        related documents carefully.
                                     </p>
                                 </div>
 
-                                {loading && <p className="text-white">⏳ Loading fund suggestions...</p>}
+                                {loading && (
+                                    <p className="text-white">⏳ Loading fund suggestions...</p>
+                                )}
 
-                                {!loading &&
-                                    performanceData.length > 0 &&
-                                    <TopSuggestedFund
-                                        performanceData={performanceData}
-                                    />
-                                }
+                                {!loading && performanceData.length > 0 && (
+                                    <TopSuggestedFund performanceData={performanceData} />
+                                )}
                                 <div className=" flex justify-center items-center mt-4">
-                                    <Link href={"/performance/fund-performance"} className="btn-secondary">
+                                    <Link
+                                        href={"/performance/fund-performance"}
+                                        className="btn-secondary"
+                                    >
                                         Explore more
                                     </Link>
                                 </div>
                             </div>
                         </div>
-                    }
+                    )}
                 </div>
-            </div >
-        </div >
+            </div>
+        </div>
     );
 };
 
