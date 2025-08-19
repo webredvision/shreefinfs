@@ -1,5 +1,5 @@
 "use client";
- 
+
 import { useState } from "react";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import {
@@ -11,12 +11,12 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Button } from "./ui/button";
- 
+
 // Function to filter data based on the given range
 const filterDataByRange = (data, range) => {
     const now = new Date();
     const filterDate = (dateStr) => new Date(dateStr) >= range;
- 
+
     // Check if range is null, which indicates that we want all data
     if (!range) {
         return data.labels
@@ -26,7 +26,7 @@ const filterDataByRange = (data, range) => {
             }))
             .filter((item) => item?.value && !isNaN(item?.value));
     }
- 
+
     return data.labels
         ?.map((label, index) => ({
             date: label,
@@ -34,7 +34,7 @@ const filterDataByRange = (data, range) => {
         }))
         ?.filter((item) => item?.value && !isNaN(item?.value) && filterDate(item?.date));
 };
- 
+
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         return (
@@ -46,21 +46,21 @@ const CustomTooltip = ({ active, payload, label }) => {
     }
     return null;
 };
- 
+
 export function ReturnChart({ data }) {
- 
+
     const [chartData, setChartData] = useState(filterDataByRange(data, new Date(new Date().setFullYear(new Date().getFullYear() - 1))));
- 
+
     const getMinValue = () => {
         const values = chartData.map((item) => item.value).filter((v) => v !== undefined && !isNaN(v));
         return values.length > 0 ? Math.min(...values) : 0;
     };
- 
+
     const handleFilter = (range) => {
         const filteredData = filterDataByRange(data, range);
         setChartData(filteredData);
     };
- 
+
     return (
         <Card>
             <CardHeader>
@@ -77,8 +77,8 @@ export function ReturnChart({ data }) {
                         >
                             <defs>
                                 <linearGradient id="gradientFill" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor={"var(--rv-secondary)"} stopOpacity={0.8} />
-                                    <stop offset="95%" stopColor={"var(--rv-secondary)"} stopOpacity={0.1} />
+                                    <stop offset="5%" stopColor={"var(--rv-primary)"} stopOpacity={0.8} />
+                                    <stop offset="95%" stopColor={"var(--rv-primary)"} stopOpacity={0.1} />
                                 </linearGradient>
                             </defs>
                             <XAxis
@@ -98,7 +98,7 @@ export function ReturnChart({ data }) {
                             />
                             <Tooltip
                                 content={<CustomTooltip />}
-                                contentStyle={{ backgroundColor: "var(--rv-secondary)", color: "#ffffff", border: "none", borderRadius: "4px" }}
+                                contentStyle={{ backgroundColor: "var(--rv-primary)", color: "#ffffff", border: "none", borderRadius: "4px" }}
                                 itemStyle={{ color: "#ffffff" }}
                             />
                             <Area
@@ -169,5 +169,5 @@ export function ReturnChart({ data }) {
         </Card>
     );
 }
- 
+
 export const description = "A simple area chart";

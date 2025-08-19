@@ -9,10 +9,10 @@ const WhoWeare = ({ aboutus, missionVission }) => {
   // console.log(missionVission)
   return (
     <div>
-      <div className="max-w-screen-xl mx-auto main_section">
+      <div className="max-w-screen-xl mx-auto">
         {/* Transforming Ambitions Section */}
         <section
-          className="grid grid-cols-1 md:grid-cols-5 gap-2 mb-6 items-center"
+          className="grid grid-cols-1 md:grid-cols-5 gap-2 items-center"
         >
           <div className="relative md:col-span-2">
             <Image

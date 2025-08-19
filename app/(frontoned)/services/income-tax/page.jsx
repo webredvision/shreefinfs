@@ -131,7 +131,7 @@ const IncomeTaxServicesPage = () => {
           <strong> SHREEFIN </strong> is your trusted partner for tax compliance and planning.
           Let us simplify your tax journey today.
         </p>
-        <Link href="contact-us" className="btn-primary">
+        <Link href="/contact-us" className="btn-primary">
           Get Expert Tax Help
         </Link>
       </div>

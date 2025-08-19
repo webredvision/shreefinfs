@@ -136,7 +136,7 @@ const FamilyInsuranceServicesPage = () => {
           <strong> SHREEFIN </strong> helps you choose the best family insurance plans.
           Give your loved ones the protection they deserve.
         </p>
-        <Link href="contact-us" className="btn-primary">
+        <Link href="/contact-us" className="btn-primary">
           Get Family Insurance Guidance
         </Link>
       </div>

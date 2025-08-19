@@ -154,17 +154,17 @@ export default function Page() {
                             </h4>
                           </div>
                         )) ||
-                      (performanceData?.one_year &&
-                        performanceData.one_year !== "0.00" && (
-                          <div>
-                            <p className="text-xs font-semibold text-stone-400">
-                              NAV: 1 Year Data
-                            </p>
-                            <h4 className="text-lg font-bold text-stone-100">
-                              {performanceData?.one_year}
-                            </h4>
-                          </div>
-                        )) /* Add six_month check here if available */ ||
+                        (performanceData?.one_year &&
+                          performanceData.one_year !== "0.00" && (
+                            <div>
+                              <p className="text-xs font-semibold text-stone-400">
+                                NAV: 1 Year Data
+                              </p>
+                              <h4 className="text-lg font-bold text-stone-100">
+                                {performanceData?.one_year}
+                              </h4>
+                            </div>
+                          )) /* Add six_month check here if available */ ||
                         (performanceData?.six_month &&
                           performanceData.six_month !== "0.00" && (
                             <div>
@@ -245,7 +245,7 @@ export default function Page() {
                     </div>
 
                     <div className="w-full">
-                      <div className="w-full bg-[var(--rv-primary)]">
+                      <div className="w-full bg-[var(--rv-secondary)] border">
                         {" "}
                         {/* Adjust this min-width as needed */}
                         {graphData ? (
@@ -299,21 +299,21 @@ export default function Page() {
                             <div className="grid grid-cols-4 text-center gap-x-16">
                               <div className="text-md font-medium text-stone-100">
                                 {performanceData?.one_year !== "0.00" &&
-                                performanceData?.one_year
+                                  performanceData?.one_year
                                   ? `${performanceData.one_year}%`
                                   : performanceData?.onemonth || "-"}
                                 %
                               </div>
                               <div className="text-md font-medium text-stone-100">
                                 {performanceData?.three_year !== "0.00" &&
-                                performanceData?.three_year
+                                  performanceData?.three_year
                                   ? `${performanceData.three_year}%`
                                   : performanceData?.six_month || "-"}
                                 %
                               </div>
                               <div className="text-md font-medium text-stone-100">
                                 {performanceData?.five_year !== "0.00" &&
-                                performanceData?.five_year
+                                  performanceData?.five_year
                                   ? `${performanceData.five_year}%`
                                   : performanceData?.three_month || "-"}
                                 %
@@ -362,7 +362,7 @@ export default function Page() {
                     </Accordion>
                   </div>
                 </div>
-                <div className="md:col-span-1 bg-[var(--rv-primary)] rounded ">
+                <div className="md:col-span-1 bg-[var(--rv-secondary)] border rounded ">
                   <SipCalculator data={performanceData?.si} />
                 </div>
               </div>

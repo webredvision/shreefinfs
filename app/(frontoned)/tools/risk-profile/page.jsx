@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { footerData } from "@/data/footer";
 import Link from "next/link";
+import InnerBanner from "@/components/InnerBanner/InnerBanner";
 
 
 const RiskProfile = () => {
@@ -291,6 +292,7 @@ Here are the answers you provided:
 
     return (
         <div className="pt-20">
+            <InnerBanner pageName={"Risk Profile"} />
             <div className="main_section">
                 <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
                     <Toaster />
@@ -355,7 +357,7 @@ Here are the answers you provided:
                             </div>
                             <Button
                                 onClick={() => handleNextClick(questions[currentQuestionIndex]?.question)}
-                                className="text-[var(--rv-white)] border px-4 py-2 rounded-lg hover:bg-[var(--rv-bg-primary)] hover:text-[var(--rv-white)] w-1/3 "
+                                className="bg-[var(--rv-white)] border px-4 py-2 rounded-lg hover:bg-[var(--rv-primary)] hover:text-[var(--rv-white)] w-1/3 "
                             >
                                 Next
                             </Button>

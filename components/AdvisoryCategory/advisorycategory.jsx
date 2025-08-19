@@ -239,7 +239,7 @@ export default function AdvisorCategory() {
           >
             Our experts carefully analyze performance, track market trends, and select funds that align with your financial goals and risk appetite, so you can invest with confidence and focus on what truly matters — your future.
           </motion.p>
-          <Link href="/products/mutual-funds">
+          <Link href="/performance/fund-performance">
             <motion.button
               className="btn-secondary"
               initial={{ x: 20, opacity: 0 }}

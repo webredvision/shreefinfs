@@ -131,7 +131,7 @@ const LifeInsuranceServicesPage = () => {
           <strong> SHREEFIN </strong> helps you choose the right life insurance plan.
           Protect what matters most today.
         </p>
-        <Link href="contact-us" className="btn-primary">
+        <Link href="/contact-us" className="btn-primary">
           Get Life Insurance Guidance
         </Link>
       </div>

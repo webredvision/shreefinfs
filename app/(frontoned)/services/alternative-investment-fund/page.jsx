@@ -139,7 +139,7 @@ const AIFPage = () => {
                     <strong> SHREEFIN </strong> partners with leading SEBI-registered AIF managers to bring you curated investment solutions.
                     Diversify your portfolio and explore the power of alternatives today.
                 </p>
-                <Link href="contact-us" className="btn-primary">
+                <Link href="/contact-us" className="btn-primary">
                     Explore AIF Solutions
                 </Link>
             </div>

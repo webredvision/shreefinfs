@@ -13,7 +13,7 @@ export default function TopFundskeleton() {
                     </tr>
                 </thead>
                 <tbody>
-                    {[1, 2, 3].map((_, idx) => (
+                    {[1, 2, 3, 4, 5, 6].map((_, idx) => (
                         <tr
                             key={idx}
                             className="border-b border-[var(--rv-ternary)]"

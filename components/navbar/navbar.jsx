@@ -20,7 +20,6 @@ const Navbar = ({ services }) => {
   const [openDropdown, setOpenDropdown] = useState(false);
   const [openDropdownTools, setOpenDropdownTools] = useState(false);
   const [openProducts, setopenProducts] = useState(false);
-  const [openSubmenu, setOpenSubmenu] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -378,11 +377,11 @@ const Navbar = ({ services }) => {
               <li>
                 <Link
                   href="/"
-                  className={`block py-2 px-3 rounded md:bg-transparent ${path === "/" ? "text-[var(--rv-primary)]" : ""
-                    } lg:p-0 hover:text-[var(--rv-secondary)]`}
+                  className={`font-semibold block py-2 px-3 rounded md:bg-transparent ${path === "/" ? "text-[var(--rv-primary)]" : ""
+                    } lg:p-0 hover:text-[var(--rv-primary)]`}
                   aria-current="page"
                 >
-                  <p className="font-medium hover:text-[var(--rv-secondary)]">
+                  <p className="hover:text-[var(--rv-primary)]">
                     Home
                   </p>
                 </Link>
@@ -395,7 +394,7 @@ const Navbar = ({ services }) => {
                     : ""
                     } lg:p-0 md:hover:text-[var(--rv-primary)]`}
                 >
-                  <p className="hover:text-[var(--rv-secondary)]">
+                  <p className="hover:text-[var(--rv-primary)]">
                     About Us
                   </p>
                 </Link>
@@ -411,10 +410,10 @@ const Navbar = ({ services }) => {
               >
                 <button
                   id="dropdownServicesLink"
-                  className="flex items-center justify-between w-full py-2 px-3 hover:text-[var(--rv-secondary)] md:hover:bg-transparent  lg:p-0 lg:w-auto font-semibold"
+                  className="flex items-center justify-between w-full py-2 px-3 hover:text-[var(--rv-primary)] md:hover:bg-transparent  lg:p-0 lg:w-auto font-semibold"
                   onClick={() => handleMainClick("services")}
                 >
-                  <p className="hover:text-[var(--rv-secondary)]">
+                  <p className="hover:text-[var(--rv-primary)]">
                     Services
                   </p>
                   <svg
@@ -464,7 +463,7 @@ const Navbar = ({ services }) => {
               >
                 <button
                   id="dropdownNavbarLink"
-                  className="flex items-center justify-between w-full py-2 px-3 hover:text-[var(--rv-secondary)] lg:hover:bg-transparent lg:border-0  lg:p-0 lg:w-auto font-semibold"
+                  className="flex items-center justify-between w-full py-2 px-3 hover:text-[var(--rv-primary)] lg:hover:bg-transparent lg:border-0  lg:p-0 lg:w-auto font-semibold"
                   onClick={() => handleMainClick("tools")}
                 >
                   <p>Tools</p>
@@ -549,11 +548,11 @@ const Navbar = ({ services }) => {
                   href="/blogs"
                   className={`block py-2 px-3 text-gray-800 rounded bg-transparent ${
                     path === "/blogs"
-                      ? "text-[var(--rv-white)] hover:text-[var(--rv-secondary)]"
+                      ? "text-[var(--rv-white)] hover:text-[var(--rv-primary)]"
                       : "md:text-gray-800"
                   } lg:p-0 `}
                 >
-                  <p className="font-medium text-[var(--rv-white)] hover:text-[var(--rv-secondary)]">
+                  <p className="font-medium text-[var(--rv-white)] hover:text-[var(--rv-primary)]">
                     Blogs
                   </p>
                 </Link>
@@ -566,7 +565,7 @@ const Navbar = ({ services }) => {
                     : ""
                     } lg:p-0 md:hover:text-[var(--rv-primary)]`}
                 >
-                  <p className="hover:text-[var(--rv-secondary)]">
+                  <p className="hover:text-[var(--rv-primary)]">
                     Contact Us
                   </p>
                 </Link>

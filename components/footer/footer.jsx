@@ -5,7 +5,6 @@ import Image from "next/image";
 import { FaFacebook, FaInstagram, FaLinkedin, FaMapLocation, FaPinterest, FaTwitter, FaWhatsapp, FaYoutube } from "react-icons/fa6";
 import { FaEnvelope, FaMap, FaPhone } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { servicedata } from "@/data/services";
 
 
 
@@ -93,7 +92,7 @@ export function Footer({ sitedata, socialMedia, arnData, services }) {
                 <ul className="space-y-2 text-md text-[var(--rv-white)] ">
                   {services.map((item, index) => (
                     <li key={index}>
-                      <Link href={`${item?.link}`} className="hover:text-[var(--secondary)]">
+                      <Link href={`/services/${item?.link}`} className="hover:text-[var(--secondary)]">
                         {item?.name}
                       </Link>
                     </li>

@@ -136,7 +136,7 @@ const HealthInsuranceServicesPage = () => {
                     <strong> SHREEFIN </strong> connects you with the best health insurance plans.
                     Protect your health and finances with the right policy today.
                 </p>
-                <Link href="contact-us" className="btn-primary">
+                <Link href="/contact-us" className="btn-primary">
                     Get Health Insurance Guidance
                 </Link>
             </div>

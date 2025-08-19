@@ -10,7 +10,7 @@ const HeaderAboutus = ({ aboutus }) => {
     <div>
       <div className="max-w-screen-xl mx-auto main_section">
         <section
-          className="grid grid-cols-1 md:grid-cols-5 gap-12 mb-6 items-center"
+          className="grid grid-cols-1 md:grid-cols-5 gap-12 items-center"
         >
           <motion.div
             className="md:col-span-3 text-[var(--rv-white)] rounded-xl"
@@ -46,7 +46,7 @@ const HeaderAboutus = ({ aboutus }) => {
           </div>
         </section>
       </div>
-      <div className="max-w-screen-xl mx-auto padding-bottom-section ">
+      <div className="max-w-screen-xl mx-auto">
         {/* Transforming Ambitions Section */}
         <section
           className="text-center items-center"

@@ -135,7 +135,7 @@ const MutualFundServicesPage = () => {
           <strong> SHREEFIN </strong> is here to guide you.
           Invest smartly, stay disciplined, and let your wealth grow over time.
         </p>
-        <Link href="contact-us" className="btn-primary">
+        <Link href="/contact-us" className="btn-primary">
           Start Investing in Mutual Funds
         </Link>
       </div>

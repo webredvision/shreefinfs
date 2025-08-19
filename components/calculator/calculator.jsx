@@ -325,7 +325,7 @@ export default function Calculator({ siteData }) {
                             type="text" // Change type to number for better input handling
                             value={monthlyInvestment}
                             onChange={(e) =>
-                              setMonthlyInvestment(parseFloat(e.target.value))
+                              setMonthlyInvestment(e.target.value)
                             }
                             className="ml-2 px-2 font-bold text-lg w-28 border-none bg-[var(--rv-white)]"
                           />
@@ -342,6 +342,14 @@ export default function Calculator({ siteData }) {
                         }
                         className={`customRange w-full text-gray-100 mt-5`}
                         aria-label="Monthly Investment Slider"
+                        style={{
+                          "--progress": `${(((isNaN(monthlyInvestment)
+                            ? 0
+                            : monthlyInvestment) -
+                            100) /
+                            (1000000 - 100)) *
+                            100}%`,
+                        }}
                       />
                     </div>
                   ) : (
@@ -372,6 +380,11 @@ export default function Calculator({ siteData }) {
                           setOneTimeInvestment(parseFloat(e.target.value))
                         }
                         className="customRange w-full mt-5"
+                        style={{
+                          "--progress": `${((oneTimeInvestment - 100) /
+                            (100000 - 100)) *
+                            100}%`,
+                        }}
                       />
 
                     </div>
@@ -401,6 +414,14 @@ export default function Calculator({ siteData }) {
                       value={investmentDuration}
                       onChange={(e) => setDuration(e.target.value)} // Update duration
                       className="customRange mt-5 w-full text-gray-400"
+                      style={{
+                        "--progress": `${(((isNaN(investmentDuration)
+                          ? 0
+                          : investmentDuration) -
+                          1) /
+                          (90 - 1)) *
+                          100}%`,
+                      }}
                     />
                   </div>
                   <div className="items-center mt-5">
@@ -426,6 +447,15 @@ export default function Calculator({ siteData }) {
                       value={expectedReturn}
                       onChange={(e) => setExpectedReturn(e.target.value)} // Update duration
                       className="customRange mt-5 w-full text-gray-400"
+                      style={{
+                        "--progress": `${(((isNaN(expectedReturn)
+                          ? 0
+                          : expectedReturn) -
+                          1) /
+                          (30 - 1)) *
+                          100}%`,
+                      }}
+
                     />
 
                   </div>

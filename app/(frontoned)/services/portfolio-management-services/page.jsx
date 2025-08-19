@@ -132,7 +132,7 @@ const PMSPage = () => {
                     <strong> SHREEFIN </strong> partners with leading SEBI-registered PMS providers to create tailored strategies that align with your wealth goals.
                     Experience smart, structured portfolio management today.
                 </p>
-                <Link href="contact-us" className="btn-primary">
+                <Link href="/contact-us" className="btn-primary">
                     Explore PMS Solutions
                 </Link>
             </div>
