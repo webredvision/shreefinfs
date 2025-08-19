@@ -4,7 +4,6 @@ import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Image from "next/image";
-import TableThree from "@/components/ui/tablethree";
 import DefaultLayout from "@/components/admin/Layouts/DefaultLaout";
 
 const AmcsLogo = () => {
@@ -33,7 +32,7 @@ const AmcsLogo = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          categoryID: logoCategory || "", // Only include if logoCategory exists
+          categoryID: logoCategory || "",
         }),
       });
 
