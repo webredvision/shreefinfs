@@ -1,11 +1,9 @@
 
-import BlogCards from "@/components/blogCard/blogcards";
-import axios from "axios";
 import React from "react";
-import Loading from "./loading";
 import { getBlogs } from "@/lib/functions";
 import InnerBanner from "@/components/innerBanner/InnerBanner";
 import style from "./BlogPage.modular.css"
+import BlogCards from "@/components/blogcards";
 
 const Blogs = async () => {
   const data = await getBlogs()
