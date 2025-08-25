@@ -131,7 +131,7 @@ const Navbar = ({ services }) => {
   return (
     <div
       className={`fixed top-0 w-full z-50 ${isMobileMenuOpen
-        ? "bg-[var(--rv-secondary)]"
+        ? "bg-[var(--rv-white)]"
         : isScrolled
           ? "bg-[var(--rv-white)] shadow-lg"
           : "bg-transparent text-white"
