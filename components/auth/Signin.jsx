@@ -1,12 +1,11 @@
 "use client"
-import React, { useState } from "react";
-import { signIn } from "next-auth/react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
 
 
-export default function Signin() {
+export default function Signin({ siteData }) {
     const router = useRouter();
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -14,32 +13,45 @@ export default function Signin() {
     const [provider, setProvider] = useState({
         username: "",
         password: "",
-        loginFor: selectedRole === "ADMIN" ? "ADVISOR" : selectedRole,
-        // callbackUrl: `${process.env.CALLBACK_URL}/login`
+        loginFor: "CLIENT",
+        callbackUrl: siteData.callbackurl,
+        siteUrl: siteData.siteurl,
     });
 
-    // console.log(provider.callbackUrl)
+    // Reset email & password when role changes
+    useEffect(() => {
+        setProvider((prev) => ({
+            ...prev,
+            username: "",
+            password: "",
+            loginFor: selectedRole === "ADMIN" ? "ADVISOR" : selectedRole,
+        }));
+    }, [selectedRole]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            setLoading(true)
-            const res = await axios.post("/api/login", provider)
-            // console.log(res.data)
+            setLoading(true);
+            console.log(provider)
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_DATA_API}/api/login/ifa-login`, provider);
+            console.log(res)
             if (res.data.status === true) {
-                router.push(`${res.data.url}`)
+                // Clear credentials on success
+                setProvider((prev) => ({ ...prev, username: "", password: "" }));
+                router.push(`${res.data.url}`);
             } else {
-                setError(res.data.msg)
+                setError(res.data.msg);
             }
         } catch (error) {
-            console.log(error)
-            setError(error)
+            console.log(error);
+            setError(error.message || "An error occurred");
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     };
 
     const roles = ["CLIENT", "EMPLOYEE", "ADMIN"];
+
     return (
         <>
             <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12 bg-gradient-to-br from-[var(--rv-bg-secondary)] to-[var(--rv-secondary)]">

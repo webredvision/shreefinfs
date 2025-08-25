@@ -46,7 +46,8 @@ const RiskProfile = () => {
         }
     }
 
-    useEffect(() => { fetchSiteData(), fetchQuestions() }, [])
+    useEffect(() => { fetchSiteData(), fetchQuestions() }, []);
+    
     const FormSchema = z.object({
         username: z.string().min(2, { message: "Username must be at least 2 characters." }),
         mobile: z.string().nonempty({ message: "Mobile number is required." }),

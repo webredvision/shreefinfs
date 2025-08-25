@@ -1,9 +1,10 @@
 import React from "react";
-
 import Signin from "@/components/auth/Signin";
 import InnerBanner from "@/components/InnerBanner/InnerBanner";
+import { getSiteData } from "@/lib/functions";
 
 const SignIn = async () => {
+  const siteData = await getSiteData();
   return (
     <>
       {/* source:https://codepen.io/owaiswiz/pen/jOPvEPB */}
@@ -19,7 +20,7 @@ const SignIn = async () => {
               backgroundPosition: 'center' // Adjust as needed
             }}>
             </div>
-            <Signin />
+            <Signin siteData={siteData} />
           </div>
         </div>
       </div>
